@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import './styles/main.css';
 import { useImmerReducer } from 'use-immer';
 import { loginReducer } from './reducers/LoginReducer';
@@ -18,9 +17,9 @@ function App() {
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
-        <>
+        <div>
           { isLoggedIn ? <Lobby /> : <Login /> }
-        </>
+        </div>
       </DispatchContext.Provider>
     </StateContext.Provider>
   );
