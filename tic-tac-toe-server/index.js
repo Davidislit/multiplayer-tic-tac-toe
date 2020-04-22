@@ -13,9 +13,11 @@ io.on('connection', socket => {
 
     console.log(`${socket.id} connected`);
 
-    socket.on('join', (userName) => {
+    socket.on('login', (userName) => {
+        console.log(userName);
         userJoin(socket.id, userName);
         const users = getUsers();
+        console.log(users);
         io.emit('user-list', users);
     })
 
@@ -38,6 +40,12 @@ io.on('connection', socket => {
 
     socket.on('disconnect', socket => {
         userLeave(socket.id)
+        const users = getUsers();
+        users.forEach((user) => {
+            if (io.sockets.connected[user.id] === undefined) {
+                userLeave(user.id)
+            }
+        })
         console.log(`${socket.id} disconnected`);
     })
 

@@ -1,6 +1,9 @@
+const localData = localStorage.getItem('username');
+
 export const initialState = {
-    username: '',
+    username: localData ? localData : '',
     isLoading: false,
     error: '',
-    isLoggedIn: false,
+    isLoggedIn: localData ? true : false,
+    localData,
 };

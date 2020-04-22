@@ -19,6 +19,7 @@ function userLeave(id) {
     if (index !== -1) {
         return users.splice(index, 1)[0];
     }
+
 }
 
 // Get room users
@@ -30,7 +31,7 @@ function setOpponents(id, opponentId) {
     return opponentId;
 }
 
-function getUsers(id) {
+function getUserById(id) {
     return users;
 }
 
@@ -38,10 +39,15 @@ function getUserExceptId(id) {
     return users.filter(user => user.id !== id)
 }
 
+function getUsers () {
+    return users;
+}
+
 module.exports = {
     userJoin,
     findUser,
     userLeave,
-    getUsers,
-    setOpponents
+    getUserById,
+    setOpponents,
+    getUsers
 }

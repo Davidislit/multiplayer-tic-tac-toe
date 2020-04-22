@@ -12,8 +12,7 @@ export function loginReducer(draft, action) {
         case 'success': {
             draft.isLoggedIn = true;
             draft.isLoading = false;
-            draft.username = '';
-            draft.password = '';
+            draft.username = action.payload;
             return;
         }
         case 'error': {
