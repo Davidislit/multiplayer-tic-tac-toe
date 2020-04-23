@@ -49,5 +49,6 @@ module.exports = {
     userLeave,
     getUserById,
     setOpponents,
-    getUsers
+    getUsers,
+    getUserExceptId
 }

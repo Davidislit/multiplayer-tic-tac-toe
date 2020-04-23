@@ -3,7 +3,7 @@ const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
 // const formatMessage = require('./utils/messages');
-const { userJoin, findUser, userLeave, getUsers, setOpponents } = require('./util/users');
+const { userJoin, findUser, userLeave, getUsers, setOpponents, getUserExceptId } = require('./util/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -19,6 +19,11 @@ io.on('connection', socket => {
         const users = getUsers();
         console.log(users);
         io.emit('user-list', users);
+    });
+
+    socket.on('get-users', () => {
+        const users = getUserExceptId(socket.id);
+        io.emit('get-users', users);
     })
 
     socket.on('invite-game', (opponentId) => {
@@ -35,7 +40,7 @@ io.on('connection', socket => {
         setOpponents(socket.id, opponentId);
         io.to(opponentId).emit('invite-game-start', socket.id);
         io.to(socket.id).emit('invite-game-start', opponentId);
-    })
+    });
 
 
     socket.on('disconnect', socket => {

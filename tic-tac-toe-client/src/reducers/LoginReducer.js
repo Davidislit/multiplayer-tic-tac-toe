@@ -32,6 +32,10 @@ export function loginReducer(draft, action) {
             todo.completed = !todo.completed;
             return;
         }
+        case 'updateConnectedUsers': {
+            draft.connectedUsers = [...action.payload];
+            return;
+        }
         default:
             break;
     }

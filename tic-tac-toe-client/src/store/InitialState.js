@@ -5,5 +5,6 @@ export const initialState = {
     isLoading: false,
     error: '',
     isLoggedIn: localData ? true : false,
+    connectedUsers: [],
     localData,
 };
