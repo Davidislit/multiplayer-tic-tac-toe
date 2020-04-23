@@ -20,11 +20,12 @@ export function loginReducer(draft, action) {
             draft.isLoggedIn = false;
             draft.isLoading = false;
             draft.username = '';
-            draft.password = '';
             return;
         }
         case 'logout': {
+            localStorage.clear();
             draft.isLoggedIn = false;
+            draft.username = '';
             return;
         }
         case 'toggleTodoCompleted': {
@@ -33,7 +34,8 @@ export function loginReducer(draft, action) {
             return;
         }
         case 'updateConnectedUsers': {
-            draft.connectedUsers = [...action.payload];
+            const users = action.payload.filter((user) => user.username !== draft.username);
+            draft.connectedUsers = [...users];
             return;
         }
         default:

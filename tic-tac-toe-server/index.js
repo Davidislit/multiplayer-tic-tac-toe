@@ -14,23 +14,22 @@ io.on('connection', socket => {
     console.log(`${socket.id} connected`);
 
     socket.on('login', (userName) => {
-        console.log(userName);
         userJoin(socket.id, userName);
         const users = getUsers();
-        console.log(users);
         io.emit('user-list', users);
     });
 
     socket.on('get-users', () => {
-        const users = getUserExceptId(socket.id);
+        const users = getUsers();
         io.emit('get-users', users);
     })
 
-    socket.on('invite-game', (opponentId) => {
+    socket.on('game-invite', (opponentId) => {
         const opponent = findUser(opponentId);
+        const inviter = findUser(socket.id);
         console.log(`${socket.id} invites ${opponentId} to play`);
         // if (opponent.opponentId !== "") {
-        io.to(opponentId).emit('invite-game', socket.id);
+        io.to(opponentId).emit('game-invite', { id: socket.id, username: inviter.username });
         // } else { 
         // io.to(socket.id).emit('already-in-game', opponentId);
         // }       
@@ -42,6 +41,11 @@ io.on('connection', socket => {
         io.to(socket.id).emit('invite-game-start', opponentId);
     });
 
+    socket.on('logout', (socketId) => {
+        userLeave(socketId);
+        console.log('AFTER LOGOUT');
+        console.log(getUsers())
+    })
 
     socket.on('disconnect', socket => {
         userLeave(socket.id)
@@ -53,6 +57,12 @@ io.on('connection', socket => {
         })
         console.log(`${socket.id} disconnected`);
     })
+
+    // update the users
+    setInterval(() => {
+        const users = getUsers();
+        io.emit('get-users', users);
+    }, 2000);
 
 });
 

@@ -7,17 +7,12 @@ import {StateContext, DispatchContext} from './context/StateContext';
 import Lobby from './components/Lobby';
 import Login from './components/Login';
 import {SocketContext} from "./context/SocketContext";
-import io from "socket.io-client";
 import {socket} from "./store/socket";
 
 function App() {
 
     const [state, dispatch] = useImmerReducer(loginReducer, initialState);
-
     const {isLoggedIn} = state;
-
-    // const socket = useSocket('localhost:5000', {autoConnect:false});
-    // const socket = io('localhost:5000');
 
     useEffect(() => {
         if (state.localData) {

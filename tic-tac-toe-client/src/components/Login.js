@@ -13,20 +13,10 @@ export default function Login() {
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
-            // socket.connect();
             dispatch({type: 'login'});
-
             socket.emit('login', username);
             dispatch({ type: 'success', payload: username })
             localStorage.setItem('username', username);
-            // socket.on('connect', () => {
-            //     console.log(socket);
-            //     if (socket.connected) {
-            //         dispatch({ type: 'success', payload: username })
-            //     } else {
-            //         dispatch({type: 'error'});
-            //     }
-            // });
         } catch (e) {
             console.log(e);
         }

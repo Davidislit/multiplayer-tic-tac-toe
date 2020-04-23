@@ -1,4 +1,4 @@
-const users = [];
+let users = [];
 
 // User Join the game
 function userJoin(id, username) {
@@ -17,7 +17,7 @@ function userLeave(id) {
     const index = users.findIndex(user => user.id === id);
 
     if (index !== -1) {
-        return users.splice(index, 1)[0];
+        users.splice(index, 1);
     }
 
 }
