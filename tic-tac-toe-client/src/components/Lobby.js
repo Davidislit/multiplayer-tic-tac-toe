@@ -31,8 +31,6 @@ export default function Lobby() {
         dispatch({ type: 'logout' });
     }
 
-
-
     return (
         <div className="flex items-center justify-center h-screen bg-blue-100">
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
