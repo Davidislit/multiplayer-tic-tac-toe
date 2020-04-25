@@ -31,7 +31,9 @@ export default function Lobby() {
 
 
     useEffect(() => {
-        socket.emit('get-users');
+        const getUsersInterval = setInterval(() => {
+            socket.emit('get-users');
+        }, 1000);
 
         socket.on('get-users', (users) => {
             dispatch({ type: 'updateConnectedUsers', payload: users });
@@ -49,6 +51,10 @@ export default function Lobby() {
         socket.on('game-invite-reject', ({ OpponentName }) => {
             ToastsStore.warning(`${OpponentName} rejected the game invite.`);
         })
+
+        return () => { 
+            clearInterval(getUsersInterval);
+        }
 
     }, []);
 

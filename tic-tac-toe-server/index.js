@@ -3,12 +3,11 @@ import http from 'http';
 import socketio from 'socket.io';
 import { userJoin, findUser, userLeave, getUsers, setOpponents, getUserExceptId } from './util/users';
 import { loginEventHandler } from './events/login';
+import { gameEventHandler } from './events/game';
 
 const app = express();
 const server = http.createServer(app);
 export const io = socketio(server);
-
-const { gameEventHandler } = require('./events/game');
 
 io.on('connection', socket => {
 

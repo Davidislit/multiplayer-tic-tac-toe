@@ -32,8 +32,8 @@ function App() {
             <StateContext.Provider value={state}>
                 <DispatchContext.Provider value={dispatch}>
                     <div>
-                        {/* {isLoggedIn ? isLoggedIn && inGame ? <Board /> : <Lobby /> : <Login />} */}
-                        <Board />
+                        {isLoggedIn ? isLoggedIn && inGame ? <Board /> : <Lobby /> : <Login />}
+                        {/* <Board /> */}
                         <ToastsContainer store={ToastsStore} />
                     </div>
                 </DispatchContext.Provider>
