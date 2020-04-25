@@ -38,6 +38,11 @@ export function loginReducer(draft, action) {
             draft.connectedUsers = [...users];
             return;
         }
+        case 'start-game': { 
+            draft.inGame = true;
+            draft.opponent.id = action.payload.opponentId;
+            draft.opponent.username = action.payload.opponentName;
+        }
         default:
             break;
     }

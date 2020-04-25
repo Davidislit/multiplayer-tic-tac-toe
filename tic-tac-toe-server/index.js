@@ -35,10 +35,15 @@ io.on('connection', socket => {
         // }       
     })
 
-    socket.on('invite-game-confirm', (opponentId) => {
+    socket.on('game-invite-confirm', (opponentId) => {
         setOpponents(socket.id, opponentId);
-        io.to(opponentId).emit('invite-game-start', socket.id);
-        io.to(socket.id).emit('invite-game-start', opponentId);
+        io.to(opponentId).emit('game-invite-confirm', socket.id);
+        io.to(socket.id).emit('game-invite-confirm', opponentId);
+    });
+
+    socket.on('game-invite-reject', (opponentId) => {
+        io.to(opponentId).emit('game-invite-reject', socket.id);
+        // io.to(socket.id).emit('invite-game-start', opponentId);
     });
 
     socket.on('logout', (socketId) => {

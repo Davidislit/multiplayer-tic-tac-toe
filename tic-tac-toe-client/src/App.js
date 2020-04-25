@@ -1,18 +1,19 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import './styles/main.css';
-import {useImmerReducer} from 'use-immer';
-import {loginReducer} from './reducers/LoginReducer';
-import {initialState} from './store/InitialState';
-import {StateContext, DispatchContext} from './context/StateContext';
+import { useImmerReducer } from 'use-immer';
+import { loginReducer } from './reducers/LoginReducer';
+import { initialState } from './store/InitialState';
+import { StateContext, DispatchContext } from './context/StateContext';
 import Lobby from './components/Lobby';
 import Login from './components/Login';
-import {SocketContext} from "./context/SocketContext";
-import {socket} from "./store/socket";
+import { SocketContext } from "./context/SocketContext";
+import { socket } from "./store/socket";
+import Board from './components/Board';
 
 function App() {
 
     const [state, dispatch] = useImmerReducer(loginReducer, initialState);
-    const {isLoggedIn} = state;
+    const { isLoggedIn, inGame } = state;
 
     useEffect(() => {
         if (state.localData) {
@@ -30,7 +31,7 @@ function App() {
             <StateContext.Provider value={state}>
                 <DispatchContext.Provider value={dispatch}>
                     <div>
-                        {isLoggedIn ? <Lobby/> : <Login/>}
+                        {isLoggedIn ? isLoggedIn && inGame ? <Board /> : <Lobby /> : <Login />}
                     </div>
                 </DispatchContext.Provider>
             </StateContext.Provider>

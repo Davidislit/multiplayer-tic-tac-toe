@@ -6,5 +6,10 @@ export const initialState = {
     error: '',
     isLoggedIn: localData ? true : false,
     connectedUsers: [],
+    inGame: false,
+    opponent: {
+        id: '',
+        username: '',
+    },
     localData,
 };
