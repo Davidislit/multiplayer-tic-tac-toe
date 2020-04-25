@@ -1,74 +1,22 @@
-const path = require('path');
-const express = require('express');
-const http = require('http');
-const socketio = require('socket.io');
-// const formatMessage = require('./utils/messages');
-const { userJoin, findUser, userLeave, getUsers, setOpponents, getUserExceptId } = require('./util/users');
+import express from 'express';
+import http from 'http';
+import socketio from 'socket.io';
+import { userJoin, findUser, userLeave, getUsers, setOpponents, getUserExceptId } from './util/users';
+import { loginEventHandler } from './events/login';
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+export const io = socketio(server);
+
+const { gameEventHandler } = require('./events/game');
 
 io.on('connection', socket => {
 
     console.log(`${socket.id} connected`);
 
-    socket.on('login', (userName) => {
-        userJoin(socket.id, userName);
-        const users = getUsers();
-        io.emit('user-list', users);
-    });
-
-    socket.on('get-users', () => {
-        const users = getUsers();
-        io.emit('get-users', users);
-    })
-
-    socket.on('game-invite', (opponentId) => {
-        const opponent = findUser(opponentId);
-        const inviter = findUser(socket.id);
-        console.log(`${socket.id} invites ${opponentId} to play`);
-        // if (opponent.opponentId !== "") {
-        io.to(opponentId).emit('game-invite', { id: socket.id, username: inviter.username });
-        // } else { 
-        // io.to(socket.id).emit('already-in-game', opponentId);
-        // }       
-    })
-
-    socket.on('game-invite-confirm', (opponentId) => {
-        setOpponents(socket.id, opponentId);
-        io.to(opponentId).emit('game-invite-confirm', socket.id);
-        io.to(socket.id).emit('game-invite-confirm', opponentId);
-    });
-
-    socket.on('game-invite-reject', (opponentId) => {
-        io.to(opponentId).emit('game-invite-reject', socket.id);
-        // io.to(socket.id).emit('invite-game-start', opponentId);
-    });
-
-    socket.on('logout', (socketId) => {
-        userLeave(socketId);
-        console.log('AFTER LOGOUT');
-        console.log(getUsers())
-    })
-
-    socket.on('disconnect', socket => {
-        userLeave(socket.id)
-        const users = getUsers();
-        users.forEach((user) => {
-            if (io.sockets.connected[user.id] === undefined) {
-                userLeave(user.id)
-            }
-        })
-        console.log(`${socket.id} disconnected`);
-    })
-
-    // update the users
-    setInterval(() => {
-        const users = getUsers();
-        io.emit('get-users', users);
-    }, 2000);
-
+    gameEventHandler(socket);
+    loginEventHandler(socket);
+    
 });
 
 const botName = "ChatCord Bot";

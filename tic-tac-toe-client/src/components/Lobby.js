@@ -4,6 +4,7 @@ import {SocketContext} from "../context/SocketContext";
 import {UserList} from "./UserList";
 import Modal from 'react-modal';
 import Board from './Board';
+import { ToastsStore } from 'react-toasts';
 
 const customStyles = {
     content: {
@@ -28,6 +29,7 @@ export default function Lobby() {
 
     const { username, connectedUsers, inGame } = state;
 
+
     useEffect(() => {
         socket.emit('get-users');
 
@@ -38,11 +40,14 @@ export default function Lobby() {
         socket.on('game-invite', ({ id, username }) => {
             setInviteModal(true);
             setInviterDetails({ id, username });
-            // alert(`${username} invited you to play!`);
         })
         
         socket.on('game-invite-confirm', ({ opponentId, opponentName }) => { 
             dispatch({ type: 'start-game', payload: { opponentId, opponentName } })
+        })
+
+        socket.on('game-invite-reject', ({ OpponentName }) => {
+            ToastsStore.warning(`${OpponentName} rejected the game invite.`);
         })
 
     }, []);
@@ -55,7 +60,8 @@ export default function Lobby() {
 
     const handleReject = () => { 
         setInviteModal(false);
-        console.log('handleReject');
+        socket.emit('game-invite-reject', inviterDetails.id);
+        // setInviterDetails({});
     }
 
     const handleAccept = () => { 
@@ -92,6 +98,7 @@ export default function Lobby() {
                     Accept
                 </button>
             </Modal>
+            
         </div>
     )
 }

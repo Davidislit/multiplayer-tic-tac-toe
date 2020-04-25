@@ -9,6 +9,7 @@ import Login from './components/Login';
 import { SocketContext } from "./context/SocketContext";
 import { socket } from "./store/socket";
 import Board from './components/Board';
+import { ToastsContainer, ToastsStore } from 'react-toasts';
 
 function App() {
 
@@ -31,7 +32,9 @@ function App() {
             <StateContext.Provider value={state}>
                 <DispatchContext.Provider value={dispatch}>
                     <div>
-                        {isLoggedIn ? isLoggedIn && inGame ? <Board /> : <Lobby /> : <Login />}
+                        {/* {isLoggedIn ? isLoggedIn && inGame ? <Board /> : <Lobby /> : <Login />} */}
+                        <Board />
+                        <ToastsContainer store={ToastsStore} />
                     </div>
                 </DispatchContext.Provider>
             </StateContext.Provider>
