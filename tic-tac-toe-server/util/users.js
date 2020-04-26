@@ -37,7 +37,29 @@ function setGameTurn(id, opponentId) {
     currentUser.playerTurn = isCurrentUserTurn;
     currentUser.player = isCurrentUserTurn ? "X" : "O";
     opponentUser.playerTurn = !isCurrentUserTurn;
-    opponentUser.player = !isCurrentUserTurn ? "X" : "O";
+    opponentUser.player = currentUser.player === "X" ? "O" : "X";
+
+
+    console.log(`setGameTurn: currentUser: ${currentUser.playerTurn} opponentUser: ${opponentUser.playerTurn}`)
+}
+
+function gameBoardTurn(id) {
+
+    console.log(`id: ${id}`);
+    const currentPlayer = findUser(id);
+    console.log(`${currentPlayer.username} currentPlayer.opponentId: ${currentPlayer.opponentId}`)
+    const opponentPlayer = findUser(currentPlayer.opponentId);
+
+    console.log('FIRST gameBoardTurn:');
+    console.log(`${currentPlayer.username} currentPlayer.playerTurn ${currentPlayer.playerTurn}, ${opponentPlayer.username} opponentPlayer.playerTurn ${opponentPlayer.playerTurn}`);
+
+    // currentPlayer.playerTurn = !currentPlayer.playerTurn;
+    // opponentPlayer.playerTurn = !opponentPlayer.playerTurn;
+
+    console.log('SECOND gameBoardTurn:');
+    console.log(`${currentPlayer.username}  currentPlayer.playerTurn ${currentPlayer.playerTurn},  ${opponentPlayer.username} opponentPlayer.playerTurn ${opponentPlayer.playerTurn}`);
+
+    return { currentPlayer, opponentPlayer };
 }
 
 function getUserExceptId(id) {
@@ -55,5 +77,6 @@ module.exports = {
     setOpponents,
     getUsers,
     getUserExceptId,
-    setGameTurn
+    setGameTurn,
+    gameBoardTurn,
 }
