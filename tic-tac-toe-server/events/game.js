@@ -1,4 +1,4 @@
-import { findUser, setOpponents } from '../util/users';
+import { findUser, setOpponents, setGameTurn } from '../util/users';
 import { io } from '../index';
 
 export const gameEventHandler = (socket) => { 
@@ -11,8 +11,15 @@ export const gameEventHandler = (socket) => {
 
     socket.on('game-invite-confirm', (opponentId) => {
         setOpponents(socket.id, opponentId);
-        io.to(opponentId).emit('game-invite-confirm', socket.id);
-        io.to(socket.id).emit('game-invite-confirm', opponentId);
+        setGameTurn(socket.id, opponentId);
+        const inviter = findUser(socket.id);
+        const opponent = findUser(opponentId);
+        io.to(opponentId).emit('game-invite-confirm',{ opponentId: inviter.id, opponentName: inviter.username, playerTurn: inviter.playerTurn, player: inviter.player });
+        io.to(socket.id).emit('game-invite-confirm', { opponentId: opponent.id, opponentName: opponent.username, playerTurn: opponent.playerTurn, player: opponent.player });
+    });
+
+    socket.on('game-board-turn', () => {
+
     });
 
     socket.on('game-invite-reject', (opponentId) => {

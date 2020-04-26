@@ -2,7 +2,7 @@ let users = [];
 
 // User Join the game
 function userJoin(id, username) {
-    const user = { id, username };
+    const user = { id, username, playerTurn: false, player: "" };
     users.push(user);
     return user;
 }
@@ -22,7 +22,6 @@ function userLeave(id) {
 
 }
 
-// Get room users
 function setOpponents(id, opponentId) {
     const currentUser = findUser(id);
     const opponentUser = findUser(opponentId);
@@ -31,8 +30,14 @@ function setOpponents(id, opponentId) {
     return opponentId;
 }
 
-function getUserById(id) {
-    return users;
+function setGameTurn(id, opponentId) {
+    const isCurrentUserTurn = Math.floor(Math.random() * 2) + 1 > 1 ? true : false;
+    const currentUser = findUser(id);
+    const opponentUser = findUser(opponentId);
+    currentUser.playerTurn = isCurrentUserTurn;
+    currentUser.player = isCurrentUserTurn ? "X" : "O";
+    opponentUser.playerTurn = !isCurrentUserTurn;
+    opponentUser.player = !isCurrentUserTurn ? "X" : "O";
 }
 
 function getUserExceptId(id) {
@@ -47,8 +52,8 @@ module.exports = {
     userJoin,
     findUser,
     userLeave,
-    getUserById,
     setOpponents,
     getUsers,
-    getUserExceptId
+    getUserExceptId,
+    setGameTurn
 }

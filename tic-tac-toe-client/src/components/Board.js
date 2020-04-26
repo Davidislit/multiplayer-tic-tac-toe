@@ -11,10 +11,10 @@ const Board = (props) => {
     const [boardSquares, setBoardSquares] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
 
-    const { username, opponent } = state;
+    const { username, opponent, playerTurn, player } = state;
 
     useEffect(() => {
-
+        socket.emit('game-match-begin', { })
     }, []);
 
     const handleClick = (index) => {
@@ -23,10 +23,11 @@ const Board = (props) => {
         if (winner || squares[index]) return;
 
         squares[index] = xIsNext ? "X" : "O";
-
         setBoardSquares(squares);
 
-        setXIsNext(!xIsNext);
+        socket.emit('game-board-turn');
+
+        // setXIsNext(!xIsNext);
     };
 
     const renderSquare = (index) => {
@@ -79,8 +80,9 @@ const Board = (props) => {
     return (
         <div className="flex items-center justify-center h-screen bg-blue-100">
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <label className="block text-gray-700 text-2xl font-bold mb-2">Me Against The Opponent!</label>
-                <div className="block text-gray-500 text-lg mb-2">Game Status:{status}</div>
+                <label className="block text-gray-700 text-2xl font-bold mb-2">{username} Against The {opponent.username}!</label>
+                <div className="block text-gray-500 text-lg mb-2">You Play: {player}</div>
+                <div className="block text-gray-500 text-lg mb-2">Turn: {playerTurn ? "You" : "Opponent"}</div>
                 <div className="flex flex-col md:flex-shrink-0">
                     <div className="flex justify-center">
                         {renderSquare(0)}

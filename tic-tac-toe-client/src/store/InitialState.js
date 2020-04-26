@@ -11,5 +11,7 @@ export const initialState = {
         id: '',
         username: '',
     },
+    playerTurn: false,
+    player: "",
     localData,
 };

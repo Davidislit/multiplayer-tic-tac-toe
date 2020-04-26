@@ -44,8 +44,9 @@ export default function Lobby() {
             setInviterDetails({ id, username });
         })
         
-        socket.on('game-invite-confirm', ({ opponentId, opponentName }) => { 
-            dispatch({ type: 'start-game', payload: { opponentId, opponentName } })
+        socket.on('game-invite-confirm', ({ opponentId, opponentName, playerTurn, player }) => {
+            console.log(`${opponentId} and ${opponentName} and ${playerTurn} and ${player}`)
+            dispatch({ type: 'start-game', payload: { opponentId, opponentName, playerTurn, player }})
         })
 
         socket.on('game-invite-reject', ({ OpponentName }) => {

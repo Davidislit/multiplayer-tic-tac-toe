@@ -28,11 +28,6 @@ export function loginReducer(draft, action) {
             draft.username = '';
             return;
         }
-        case 'toggleTodoCompleted': {
-            const todo = draft.todos.find(item => item.title === action.payload);
-            todo.completed = !todo.completed;
-            return;
-        }
         case 'updateConnectedUsers': {
             const users = action.payload.filter((user) => user.username !== draft.username);
             draft.connectedUsers = [...users];
@@ -42,6 +37,8 @@ export function loginReducer(draft, action) {
             draft.inGame = true;
             draft.opponent.id = action.payload.opponentId;
             draft.opponent.username = action.payload.opponentName;
+            draft.playerTurn = action.payload.playerTurn;
+            draft.player = action.payload.player;
         }
         default:
             break;
