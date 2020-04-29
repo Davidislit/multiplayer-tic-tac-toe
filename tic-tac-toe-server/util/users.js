@@ -22,42 +22,63 @@ function userLeave(id) {
 
 }
 
+function findUserIndex(id) {
+    const index = users.findIndex(user => user.id === id);
+
+    if (index === -1) {
+        return null
+    }
+
+    return index;
+}
+
 function setOpponents(id, opponentId) {
-    const currentUser = findUser(id);
-    const opponentUser = findUser(opponentId);
-    opponentUser.opponentId = id;
-    currentUser.opponentId = opponentId;
-    return opponentId;
+    const currentUserIndex = findUserIndex(id);
+    const opponentUserIndex = findUserIndex(opponentId);
+    users[currentUserIndex] = { ...users[currentUserIndex], opponentId: opponentId  };
+    users[opponentUserIndex] = { ...users[opponentUserIndex], opponentId: id  };
+    // currentUser.opponentId = opponentId;
+    return;
 }
 
 function setGameTurn(id, opponentId) {
     const isCurrentUserTurn = Math.floor(Math.random() * 2) + 1 > 1 ? true : false;
-    const currentUser = findUser(id);
-    const opponentUser = findUser(opponentId);
-    currentUser.playerTurn = isCurrentUserTurn;
-    currentUser.player = isCurrentUserTurn ? "X" : "O";
-    opponentUser.playerTurn = !isCurrentUserTurn;
-    opponentUser.player = currentUser.player === "X" ? "O" : "X";
+    const currentUserIndex = findUserIndex(id);
+    const opponentUserIndex = findUserIndex(opponentId);
 
+    users[currentUserIndex] = {
+        ...users[currentUserIndex],
+        playerTurn: isCurrentUserTurn,
+        player: isCurrentUserTurn ? "X" : "O"
+    };
 
-    console.log(`setGameTurn: currentUser: ${currentUser.playerTurn} opponentUser: ${opponentUser.playerTurn}`)
+    // currentUser.playerTurn = isCurrentUserTurn;
+    // currentUser.player = isCurrentUserTurn ? "X" : "O";
+
+    users[opponentUserIndex] = {
+        ...users[opponentUserIndex],
+        playerTurn: !isCurrentUserTurn,
+        player: !isCurrentUserTurn ? "X" : "O"
+    };
+    // opponentUser.playerTurn = !isCurrentUserTurn;
+    // opponentUser.player = !isCurrentUserTurn? "X" : "O";
+
+    console.log(`isCurrentUserTurn: ${isCurrentUserTurn}`);
+
+    console.log(`setGameTurn: ${users[currentUserIndex].username} playering: ${users[currentUserIndex].player} and his turn: ${users[currentUserIndex].playerTurn}`);
+    console.log(`setGameTurn: ${users[opponentUserIndex].username} playering: ${users[opponentUserIndex].player} and his turn: ${users[opponentUserIndex].playerTurn}`);
 }
 
 function gameBoardTurn(id) {
 
-    console.log(`id: ${id}`);
-    const currentPlayer = findUser(id);
-    console.log(`${currentPlayer.username} currentPlayer.opponentId: ${currentPlayer.opponentId}`)
+    let currentPlayer = findUser(id);
     const opponentPlayer = findUser(currentPlayer.opponentId);
 
-    console.log('FIRST gameBoardTurn:');
-    console.log(`${currentPlayer.username} currentPlayer.playerTurn ${currentPlayer.playerTurn}, ${opponentPlayer.username} opponentPlayer.playerTurn ${opponentPlayer.playerTurn}`);
+    currentPlayer.playerTurn = currentPlayer.playerTurn === true ? false : true;
+    opponentPlayer.playerTurn = opponentPlayer.playerTurn === true ? false : true;
 
-    // currentPlayer.playerTurn = !currentPlayer.playerTurn;
-    // opponentPlayer.playerTurn = !opponentPlayer.playerTurn;
-
-    console.log('SECOND gameBoardTurn:');
-    console.log(`${currentPlayer.username}  currentPlayer.playerTurn ${currentPlayer.playerTurn},  ${opponentPlayer.username} opponentPlayer.playerTurn ${opponentPlayer.playerTurn}`);
+    console.log(`gameBoardTurn: ${currentPlayer.username} playering: ${currentPlayer.player} and his turn: ${currentPlayer.playerTurn}`);
+    console.log(`gameBoardTurn: ${opponentPlayer.username} playering: ${opponentPlayer.player} and his turn: ${opponentPlayer.playerTurn}`);
 
     return { currentPlayer, opponentPlayer };
 }

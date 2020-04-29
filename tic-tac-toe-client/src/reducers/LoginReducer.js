@@ -33,12 +33,18 @@ export function loginReducer(draft, action) {
             draft.connectedUsers = [...users];
             return;
         }
-        case 'start-game': { 
+        case 'start-game': {
             draft.inGame = true;
             draft.opponent.id = action.payload.opponentId;
             draft.opponent.username = action.payload.opponentName;
             draft.playerTurn = action.payload.playerTurn;
             draft.player = action.payload.player;
+            return;
+        }
+        case 'game-turn': {
+            // console.log(`game-turn ${draft.username} ${action.payload}`)
+            draft.playerTurn = action.payload;
+            return;
         }
         default:
             break;
