@@ -1,4 +1,4 @@
-import { findUser, setOpponents, setGameTurn, gameBoardTurn } from '../util/users';
+import { findUser, setOpponents, setGameTurn, gameBoardTurn, verifyGameWinner, gameReset, leaveGame } from '../util/users';
 import { io } from '../index';
 
 export const gameEventHandler = (socket) => { 
@@ -27,11 +27,37 @@ export const gameEventHandler = (socket) => {
         io.to(currentPlayer.id).emit('game-board',{ playerTurn: currentPlayer.playerTurn, squares: squares });
         io.to(opponentPlayer.id).emit('game-board', { playerTurn: opponentPlayer.playerTurn, squares: squares });
 
+        const winner = verifyGameWinner(squares);
+
+        if (winner) {
+            if (currentPlayer.player === winner) {
+                io.to(currentPlayer.id).emit('game-winner',{ winner: currentPlayer.username });
+                io.to(opponentPlayer.id).emit('game-winner', { winner: currentPlayer.username });
+            } else {
+                io.to(currentPlayer.id).emit('game-winner',{ winner: opponentPlayer.username });
+                io.to(opponentPlayer.id).emit('game-winner', { winner: opponentPlayer.username });
+            }
+        }
+    });
+
+    socket.on('game-reset', () => {
+
+        const { currentPlayer, opponentPlayer } = gameReset(socket.id);
+
+        io.to(currentPlayer.id).emit('game-reset',{ playerTurn: currentPlayer.playerTurn });
+        io.to(opponentPlayer.id).emit('game-reset', { playerTurn: opponentPlayer.playerTurn });
+
     });
 
     socket.on('game-invite-reject', (opponentId) => {
         const opponent = findUser(opponentId);
         io.to(opponentId).emit('game-invite-reject', { OpponentName: opponent.username });
-        // io.to(socket.id).emit('invite-game-start', opponentId);
+    });
+
+    socket.on('game-leave', () => {
+       const opponentPlayerId = leaveGame(socket.id);
+
+        io.to(socket.id).emit('game-leave');
+        io.to(opponentPlayerId).emit('game-leave');
     });
 }

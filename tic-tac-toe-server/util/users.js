@@ -37,7 +37,6 @@ function setOpponents(id, opponentId) {
     const opponentUserIndex = findUserIndex(opponentId);
     users[currentUserIndex] = { ...users[currentUserIndex], opponentId: opponentId  };
     users[opponentUserIndex] = { ...users[opponentUserIndex], opponentId: id  };
-    // currentUser.opponentId = opponentId;
     return;
 }
 
@@ -52,21 +51,12 @@ function setGameTurn(id, opponentId) {
         player: isCurrentUserTurn ? "X" : "O"
     };
 
-    // currentUser.playerTurn = isCurrentUserTurn;
-    // currentUser.player = isCurrentUserTurn ? "X" : "O";
-
     users[opponentUserIndex] = {
         ...users[opponentUserIndex],
         playerTurn: !isCurrentUserTurn,
         player: !isCurrentUserTurn ? "X" : "O"
     };
-    // opponentUser.playerTurn = !isCurrentUserTurn;
-    // opponentUser.player = !isCurrentUserTurn? "X" : "O";
 
-    console.log(`isCurrentUserTurn: ${isCurrentUserTurn}`);
-
-    console.log(`setGameTurn: ${users[currentUserIndex].username} playering: ${users[currentUserIndex].player} and his turn: ${users[currentUserIndex].playerTurn}`);
-    console.log(`setGameTurn: ${users[opponentUserIndex].username} playering: ${users[opponentUserIndex].player} and his turn: ${users[opponentUserIndex].playerTurn}`);
 }
 
 function gameBoardTurn(id) {
@@ -76,9 +66,6 @@ function gameBoardTurn(id) {
 
     currentPlayer.playerTurn = currentPlayer.playerTurn === true ? false : true;
     opponentPlayer.playerTurn = opponentPlayer.playerTurn === true ? false : true;
-
-    console.log(`gameBoardTurn: ${currentPlayer.username} playering: ${currentPlayer.player} and his turn: ${currentPlayer.playerTurn}`);
-    console.log(`gameBoardTurn: ${opponentPlayer.username} playering: ${opponentPlayer.player} and his turn: ${opponentPlayer.playerTurn}`);
 
     return { currentPlayer, opponentPlayer };
 }
@@ -91,6 +78,59 @@ function getUsers () {
     return users;
 }
 
+function verifyGameWinner(squares) {
+    const winningLines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+
+    for (let i = 0; i < winningLines.length; i++) {
+        const [a, b, c] = winningLines[i];
+        if (
+            squares[a] &&
+            squares[a] === squares[b] &&
+            squares[b] === squares[c]
+        ) {
+            return squares[a];
+        }
+    }
+
+    return null;
+}
+
+function gameReset(id) {
+    let currentPlayer = findUser(id);
+    let opponentPlayer = findUser(currentPlayer.opponentId);
+
+    if (currentPlayer.player === 'X') {
+        currentPlayer.playerTurn = true;
+        opponentPlayer.playerTurn = false;
+    } else {
+        currentPlayer.playerTurn = false;
+        opponentPlayer.playerTurn = true;
+    }
+
+    return { currentPlayer, opponentPlayer };
+}
+
+function leaveGame(id) {
+    const currentUserIndex = findUserIndex(id);
+    const opponentUserIndex = findUserIndex(users[currentUserIndex].opponentId);
+    const opponentPlayerId = users[opponentUserIndex].id;
+
+    users[currentUserIndex] = { ...users[currentUserIndex], opponentId: "", playerTurn: "", player: "" };
+    users[opponentUserIndex] = { ...users[opponentUserIndex], opponentId: "", playerTurn: "", player: ""  };
+
+    return opponentPlayerId;
+
+}
+
 module.exports = {
     userJoin,
     findUser,
@@ -100,4 +140,7 @@ module.exports = {
     getUserExceptId,
     setGameTurn,
     gameBoardTurn,
+    verifyGameWinner,
+    gameReset,
+    leaveGame
 }

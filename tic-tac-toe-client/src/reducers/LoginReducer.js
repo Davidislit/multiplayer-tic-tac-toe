@@ -46,6 +46,13 @@ export function loginReducer(draft, action) {
             draft.playerTurn = action.payload;
             return;
         }
+        case 'game-leave': {
+            draft.inGame = false;
+            draft.opponent.id = "";
+            draft.opponent.username = "";
+            draft.playerTurn = "";
+            draft.player = "";
+        }
         default:
             break;
     }
