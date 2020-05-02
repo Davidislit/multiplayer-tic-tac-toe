@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { DispatchContext, StateContext } from '../context/StateContext';
 import { SocketContext } from '../context/SocketContext';
 import Fireworks from "fireworks/lib/react";
+import {ToastsStore} from "react-toasts";
 
 const Board = (props) => {
 
@@ -15,11 +16,7 @@ const Board = (props) => {
     const { username, opponent, playerTurn, player } = state;
 
     useEffect(() => {
-        console.log(`username ${username} PlayerTurn: ${playerTurn}`);
-
         socket.on('game-board', ({ playerTurn, squares }) => {
-            console.log(`${username} playerTurn: ${playerTurn}`);
-
             dispatch({ type: 'game-turn', payload: playerTurn });
             setBoardSquares(squares);
         });
@@ -31,10 +28,14 @@ const Board = (props) => {
         })
 
         socket.on('game-winner', ({winner}) => {
+            console.log(winner);
             setWinner(winner);
         });
 
-        socket.on('game-leave', () => {
+        socket.on('game-leave', ({ leavedGame }) => {
+            if (leavedGame) {
+                ToastsStore.error(`${opponent.username} left the game.`);
+            }
             dispatch({ type: 'game-leave' })
         })
     }, []);
@@ -42,7 +43,6 @@ const Board = (props) => {
     const handleClick = (index) => {
         const squares = [...boardSquares];
 
-        // TODO: add winner variable
         if (squares[index]) return;
 
         if (playerTurn) {
@@ -60,32 +60,6 @@ const Board = (props) => {
         );
     };
 
-    const calculateWinner = (squares) => {
-        // const winningLines = [
-        //     [0, 1, 2],
-        //     [3, 4, 5],
-        //     [6, 7, 8],
-        //     [0, 3, 6],
-        //     [1, 4, 7],
-        //     [2, 5, 8],
-        //     [0, 4, 8],
-        //     [2, 4, 6],
-        // ];
-        //
-        // for (let i = 0; i < winningLines.length; i++) {
-        //     const [a, b, c] = winningLines[i];
-        //     if (
-        //         squares[a] &&
-        //         squares[a] === squares[b] &&
-        //         squares[b] === squares[c]
-        //     ) {
-        //         return squares[a];
-        //     }
-        // }
-        //
-        // return null;
-    };
-
     const resetGame = () => {
         setBoardSquares(Array(9).fill(null));
         socket.emit('game-reset');
@@ -95,11 +69,31 @@ const Board = (props) => {
         socket.emit('game-leave');
     }
 
-    // let status;
-    // const winner = calculateWinner(boardSquares);
-    // status = winner
-    //     ? `Winner is ${winner}`
-    //     : `Next player: ${xIsNext ? "X" : "O"}`;
+    const renderWinner = () => {
+        switch (true) {
+            case winner === 'draw':
+                return ( <div className="block text-gray-500 text-2xl mb-2">Draw</div>);
+            case winner === player:
+                return (
+                    <>
+                        <Fireworks {...fxProps}/>
+                        <div className="block text-gray-500 text-2xl mb-2">You Won!</div>
+                    </>
+                );
+            case winner === opponent.player:
+                    return (
+                        <div className="block text-gray-500 text-2xl mb-2">You Lost :(</div>
+                    );
+            default:
+                return (
+                    <>
+                        <div className="block text-gray-500 text-lg mb-2">You Play: {player}</div>
+                        <div className="block text-gray-500 text-lg mb-2">Turn: {playerTurn ? "You" : "Opponent"}</div>
+                    </>
+                );
+
+        }
+    }
 
     let fxProps = {
         count: 3,
@@ -116,15 +110,7 @@ const Board = (props) => {
         <div className="flex items-center justify-center h-screen bg-blue-100">
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <label className="block text-gray-700 text-2xl font-bold mb-2">{username} Against The {opponent.username}!</label>
-                { winner === username ? <Fireworks {...fxProps}/> : null }
-                { winner ? (
-                    <div className="block text-gray-500 text-2xl mb-2">Winner is {winner}</div>
-                ) : (
-                    <>
-                <div className="block text-gray-500 text-lg mb-2">You Play: {player}</div>
-                <div className="block text-gray-500 text-lg mb-2">Turn: {playerTurn ? "You" : "Opponent"}</div>
-                    </>
-                ) }
+                {renderWinner()}
                 <div className="flex flex-col md:flex-shrink-0">
                     <div className="flex justify-center">
                         {renderSquare(0)}

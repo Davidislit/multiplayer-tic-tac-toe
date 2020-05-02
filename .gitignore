@@ -1,3 +1,4 @@
 .idea
 node_modules/
 /tic-tac-toe-client/package-lock.json
+/tic-tac-toe-client/.env

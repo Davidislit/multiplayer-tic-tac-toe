@@ -8,14 +8,18 @@
     "dev": "nodemon --inspect --exec babel-node index.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.9.11",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "*",
-    "@babel/core": "*",
-    "@babel/preset-env": "*",
-    "@babel/node": "*",
-    "nodemon": "^2.0.3"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
+    "install": "^0.13.0",
+    "nodemon": "^2.0.3",
+    "npm": "^6.14.4"
   }
 }

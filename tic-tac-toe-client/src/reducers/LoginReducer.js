@@ -37,6 +37,7 @@ export function loginReducer(draft, action) {
             draft.inGame = true;
             draft.opponent.id = action.payload.opponentId;
             draft.opponent.username = action.payload.opponentName;
+            draft.opponent.player = action.payload.opponentPlay;
             draft.playerTurn = action.payload.playerTurn;
             draft.player = action.payload.player;
             return;
@@ -50,6 +51,7 @@ export function loginReducer(draft, action) {
             draft.inGame = false;
             draft.opponent.id = "";
             draft.opponent.username = "";
+            draft.opponent.player = "";
             draft.playerTurn = "";
             draft.player = "";
         }

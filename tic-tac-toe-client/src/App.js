@@ -22,6 +22,10 @@ function App() {
         }
 
         socket.on('disconnect', () => {
+            if (inGame) {
+                socket.emit('game-leave');
+            }
+
             socket.emit('disconnect', socket.id);
         })
 
@@ -33,7 +37,6 @@ function App() {
                 <DispatchContext.Provider value={dispatch}>
                     <div>
                         {isLoggedIn ? isLoggedIn && inGame ? <Board /> : <Lobby /> : <Login />}
-                        {/* <Board /> */}
                         <ToastsContainer store={ToastsStore} />
                     </div>
                 </DispatchContext.Provider>

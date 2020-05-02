@@ -75,10 +75,12 @@ function getUserExceptId(id) {
 }
 
 function getUsers () {
-    return users;
+    const availableUsers = users.filter(user => user.player === "");
+    return availableUsers;
 }
 
 function verifyGameWinner(squares) {
+    let squaresCount = 0;
     const winningLines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -99,6 +101,16 @@ function verifyGameWinner(squares) {
         ) {
             return squares[a];
         }
+    }
+
+    squares.forEach((square) => {
+        if (square === null) {
+            squaresCount++;
+        }
+    })
+
+    if (squaresCount === 0) {
+        return "draw"
     }
 
     return null;
