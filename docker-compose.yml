@@ -1,13 +1,13 @@
 version: '3'
 services:
   server:
-    build: ./tic-tac-toe-server
+    build: server
     ports:
       - '5000:5000'
     restart: on-failure
     container_name: tictac-server
   client:
-    build: ./tic-tac-toe-client
+    build: client
     ports:
       - '81:80'
     restart: on-failure
