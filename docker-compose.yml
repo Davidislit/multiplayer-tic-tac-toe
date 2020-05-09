@@ -3,7 +3,7 @@ services:
   mongo:
     image: mongo
     ports:
-      - '27016:27017'
+      - '27017:27017'
   redis:
     image: redis
     ports:
@@ -34,9 +34,9 @@ services:
     env_file:
       - .client-env-example
     ports:
-      - '81:80'
+      - '80:80'
     restart: on-failure
     links:
       - ngnix
 
-# run docker-compose up --scale server=3
+# run docker-compose up --scale server=3 -d
