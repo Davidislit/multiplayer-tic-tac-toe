@@ -1,16 +1,42 @@
 version: '3'
 services:
+  mongo:
+    image: mongo
+    ports:
+      - '27016:27017'
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
   server:
     build: server
-    ports:
-      - '5000:5000'
+#    ports:
+#      - '5000:5000'
     restart: on-failure
-    container_name: tictac-server
+    env_file:
+      - .server-env-example
+    depends_on:
+      - mongo
+      - redis
+    links:
+      - mongo
+      - redis
+  ngnix:
+    image: nginx:1.18
+    ports:
+      - "5000:5000"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    links:
+      - server
   client:
     build: client
+    env_file:
+      - .client-env-example
     ports:
       - '81:80'
     restart: on-failure
-    container_name: tictac-client
     links:
-      - server
+      - ngnix
+
+# run docker-compose up --scale server=3

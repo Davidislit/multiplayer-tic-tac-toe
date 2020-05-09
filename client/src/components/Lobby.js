@@ -36,7 +36,9 @@ export default function Lobby() {
         }, 1000);
 
         socket.on('get-users', (users) => {
-            dispatch({ type: 'updateConnectedUsers', payload: users });
+            if (users.length > 0) {
+                dispatch({ type: 'updateConnectedUsers', payload: users });
+            }
         });
 
         socket.on('game-invite', ({ id, username }) => {
@@ -45,7 +47,6 @@ export default function Lobby() {
         })
         
         socket.on('game-invite-confirm', ({ opponentId, opponentName, opponentPlay, playerTurn, player }) => {
-            console.log(`${opponentId} and ${opponentName} and opponentPlay: ${opponentPlay} and ${playerTurn} and ${player}`)
             dispatch({ type: 'start-game', payload: { opponentId, opponentName, opponentPlay, playerTurn, player }})
         })
 

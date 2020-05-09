@@ -1,16 +1,28 @@
-import { Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const userSchema = Schema({
     username: {
         type: String,
+        // unique: true,
         required: true
     },
-    password: {
+    connectionId: {
         type: String,
         required: true
     },
-    score: Number
+    opponentId: {
+        type: String,
+    },
+    opponentName: {
+        type: String,
+    },
+    player: String,
+    playerTurn: Boolean,
 });
 
 
-module.exports = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
+
+export default User;
+
+// module.exports = mongoose.model('User', userSchema);

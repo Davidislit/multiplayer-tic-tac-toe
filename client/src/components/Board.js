@@ -28,7 +28,6 @@ const Board = (props) => {
         })
 
         socket.on('game-winner', ({winner}) => {
-            console.log(winner);
             setWinner(winner);
         });
 
@@ -46,9 +45,7 @@ const Board = (props) => {
         if (squares[index]) return;
 
         if (playerTurn) {
-            console.log(`${username} playerTurn: ${playerTurn}`)
             squares[index] = player;
-            console.log(`${socket.id} emit (game-board-turn)`);
             socket.emit('game-board-turn', squares);
         }
         setBoardSquares(squares);

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './styles/main.css';
 import { useImmerReducer } from 'use-immer';
-import { loginReducer } from './reducers/LoginReducer';
+import { gameReducer } from './reducers/GameReducer';
 import { initialState } from './store/InitialState';
 import { StateContext, DispatchContext } from './context/StateContext';
 import Lobby from './components/Lobby';
@@ -13,7 +13,7 @@ import { ToastsContainer, ToastsStore } from 'react-toasts';
 
 function App() {
 
-    const [state, dispatch] = useImmerReducer(loginReducer, initialState);
+    const [state, dispatch] = useImmerReducer(gameReducer, initialState);
     const { isLoggedIn, inGame } = state;
 
     useEffect(() => {

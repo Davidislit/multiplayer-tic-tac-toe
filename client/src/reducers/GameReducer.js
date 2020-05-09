@@ -1,4 +1,4 @@
-export function loginReducer(draft, action) {
+export function gameReducer(draft, action) {
     switch (action.type) {
         case 'field': {
             draft[action.fieldName] = action.payload;
@@ -9,10 +9,15 @@ export function loginReducer(draft, action) {
             draft.isLoading = true;
             return;
         }
-        case 'success': {
+        case 'login-success': {
             draft.isLoggedIn = true;
             draft.isLoading = false;
             draft.username = action.payload;
+            return;
+        }
+        case 'login-fail': {
+            draft.error = 'User name is already taken';
+            draft.isLoading = false;
             return;
         }
         case 'error': {
@@ -43,7 +48,6 @@ export function loginReducer(draft, action) {
             return;
         }
         case 'game-turn': {
-            // console.log(`game-turn ${draft.username} ${action.payload}`)
             draft.playerTurn = action.payload;
             return;
         }

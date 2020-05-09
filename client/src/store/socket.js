@@ -1,7 +1,9 @@
 import io from "socket.io-client";
 
-// export const socket = io(process.env.SERVER_URL);
+const socketIoURL = process.env.REACT_APP_API_URL;
+
+export const socket = io(socketIoURL);
 
 
-export const socket = io("localhost:5000");
+// export const socket = io("localhost:5000");
 

@@ -1,0 +1,3 @@
+mongoURL=mongo
+redisURL=redis
+redisPort=6379

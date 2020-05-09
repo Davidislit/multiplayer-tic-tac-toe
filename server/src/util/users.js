@@ -1,25 +1,32 @@
+import {authenticate} from "../service/user.service";
+
 let users = [];
 
 // User Join the game
-function userJoin(id, username) {
+async function userJoin(id, username) {
     const user = { id, username, playerTurn: false, player: "" };
     users.push(user);
-    return user;
+
+    return await authenticate(username, id);
+
+
+    // if (authenticate(username, id)) {
+    //     return username;
+    // }
+    //
+    // const user = { id, username, playerTurn: false, player: "" };
+    // users.push(user);
+    // return user;
 }
 
 // find user
-function findUser(id) {
-    return users.find(user => user.id === id);
-}
+// function findUser(id) {
+//     return users.find(user => user.id === id);
+// }
 
 // User leaves game
 function userLeave(id) {
-    const index = users.findIndex(user => user.id === id);
-
-    if (index !== -1) {
-        users.splice(index, 1);
-    }
-
+    deleteById(id);
 }
 
 function findUserIndex(id) {
@@ -74,9 +81,10 @@ function getUserExceptId(id) {
     return users.filter(user => user.id !== id)
 }
 
-function getUsers () {
-    const availableUsers = users.filter(user => user.player === "");
-    return availableUsers;
+async function getUsers () {
+    return [...await User.find()];
+    // const availableUsers = users.filter(user => user.player === "");
+    // return availableUsers;
 }
 
 function verifyGameWinner(squares) {
@@ -144,8 +152,6 @@ function leaveGame(id) {
 }
 
 module.exports = {
-    userJoin,
-    findUser,
     userLeave,
     setOpponents,
     getUsers,
@@ -154,5 +160,6 @@ module.exports = {
     gameBoardTurn,
     verifyGameWinner,
     gameReset,
-    leaveGame
+    leaveGame,
+    userJoin
 }

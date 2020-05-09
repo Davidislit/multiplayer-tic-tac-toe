@@ -17,7 +17,7 @@ export const User = ({ user }) => {
     }
 
     const handleInvite = () => {
-        socket.emit('game-invite', user.id );
+        socket.emit('game-invite', user.connectionId );
     }
 
     return (

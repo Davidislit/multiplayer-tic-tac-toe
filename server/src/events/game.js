@@ -1,55 +1,53 @@
-import { findUser, setOpponents, setGameTurn, gameBoardTurn, verifyGameWinner, gameReset, leaveGame } from '../util/users';
 import { io } from '../index';
+import { findUserByConnectionId } from "../service/user.service";
+import {gameInviteConfirmed, gameBoardTurn, verifyGameWinner, leaveGame, gameReset} from "../service/game.service";
 
 export const gameEventHandler = (socket) => { 
 
-    socket.on('game-invite', (opponentId) => {
-        const opponent = findUser(opponentId);
-        const inviter = findUser(socket.id);
+    socket.on('game-invite', async (opponentId) => {
+        const inviter = await findUserByConnectionId(socket.id);
+        console.log(inviter);
         io.to(opponentId).emit('game-invite', { id: socket.id, username: inviter.username });
     });
 
-    socket.on('game-invite-confirm', (opponentId) => {
+    socket.on('game-invite-confirm', async (opponentId) => {
 
-        setOpponents(socket.id, opponentId);
-        setGameTurn(socket.id, opponentId);
-        const inviter = findUser(socket.id);
-        const opponent = findUser(opponentId);
+        const { inviter, opponent } = await gameInviteConfirmed(socket.id, opponentId);
 
-        io.to(opponentId).emit('game-invite-confirm',{ opponentId: inviter.id, opponentName: inviter.username, opponentPlay: inviter.player, playerTurn:  opponent.playerTurn , player: opponent.player });
-        io.to(socket.id).emit('game-invite-confirm', { opponentId: opponent.id, opponentName: opponent.username, opponentPlay: opponent.player, playerTurn: inviter.playerTurn, player: inviter.player });
+        io.to(opponentId).emit('game-invite-confirm',{ opponentId: inviter.connectionId, opponentName: inviter.username, opponentPlay: inviter.player, playerTurn:  opponent.playerTurn , player: opponent.player });
+        io.to(socket.id).emit('game-invite-confirm', { opponentId: opponent.connectionId, opponentName: opponent.username, opponentPlay: opponent.player, playerTurn: inviter.playerTurn, player: inviter.player });
     });
 
-    socket.on('game-board-turn', (squares) => {
+    socket.on('game-board-turn', async (squares) => {
 
-        const { currentPlayer, opponentPlayer } = gameBoardTurn(socket.id);
+        const { currentPlayer, opponentPlayer } = await gameBoardTurn(socket.id);
 
-        io.to(currentPlayer.id).emit('game-board',{ playerTurn: currentPlayer.playerTurn, squares: squares });
-        io.to(opponentPlayer.id).emit('game-board', { playerTurn: opponentPlayer.playerTurn, squares: squares });
+        io.to(currentPlayer.connectionId).emit('game-board',{ playerTurn: currentPlayer.playerTurn, squares: squares });
+        io.to(opponentPlayer.connectionId).emit('game-board', { playerTurn: opponentPlayer.playerTurn, squares: squares });
 
-        const winner = verifyGameWinner(squares);
+        const winner = await verifyGameWinner(squares);
 
-        io.to(currentPlayer.id).emit('game-winner',{ winner: winner });
-        io.to(opponentPlayer.id).emit('game-winner', { winner: winner });
+        io.to(currentPlayer.connectionId).emit('game-winner',{ winner: winner });
+        io.to(opponentPlayer.connectionId).emit('game-winner', { winner: winner });
 
     });
 
-    socket.on('game-reset', () => {
+    socket.on('game-reset', async () => {
 
-        const { currentPlayer, opponentPlayer } = gameReset(socket.id);
+        const { currentPlayer, opponentPlayer } = await gameReset(socket.id);
 
-        io.to(currentPlayer.id).emit('game-reset',{ playerTurn: currentPlayer.playerTurn });
-        io.to(opponentPlayer.id).emit('game-reset', { playerTurn: opponentPlayer.playerTurn });
+        io.to(currentPlayer.connectionId).emit('game-reset',{ playerTurn: currentPlayer.playerTurn });
+        io.to(opponentPlayer.connectionId).emit('game-reset', { playerTurn: opponentPlayer.playerTurn });
 
     });
 
-    socket.on('game-invite-reject', (opponentId) => {
-        const opponent = findUser(opponentId);
+    socket.on('game-invite-reject', async (opponentId) => {
+        const opponent = await findUserByConnectionId(opponentId);
         io.to(opponentId).emit('game-invite-reject', { OpponentName: opponent.username });
     });
 
-    socket.on('game-leave', () => {
-       const opponentPlayerId = leaveGame(socket.id);
+    socket.on('game-leave', async () => {
+       const opponentPlayerId = await leaveGame(socket.id);
 
         io.to(socket.id).emit('game-leave', { leavedGame: false });
         io.to(opponentPlayerId).emit('game-leave', { leavedGame: true });

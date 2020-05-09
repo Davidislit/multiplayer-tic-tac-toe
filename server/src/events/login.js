@@ -1,39 +1,34 @@
-import { findUser, getUsers, userJoin, userLeave } from '../util/users';
+import {userJoin, userLeave} from '../util/users';
 import { io } from '../index';
+import {deleteById, getUsers, validateConnectedUsers} from '../service/user.service';
 
 export const loginEventHandler = (socket) => {
 
-    socket.on('login', (userName) => {
-        userJoin(socket.id, userName);
+    socket.on('login', async (userName) => {
+        const connected = await userJoin(socket.id, userName);
         const users = getUsers();
+        socket.emit('login', { connected, userName });
         io.emit('user-list', users);
     });
 
-    socket.on('get-users', () => {
-        const users = getUsers();
+    socket.on('get-users', async () => {
+        const users = await getUsers();
         io.emit('get-users', users);
     });
 
     socket.on('logout', (socketId) => {
-        userLeave(socketId);
-        console.log('AFTER LOGOUT');
-        console.log(getUsers())
-    })
+        deleteById(socketId);
+    });
 
-    socket.on('disconnect', socket => {
-        userLeave(socket.id)
-        const users = getUsers();
-        users.forEach((user) => {
-            if (io.sockets.connected[user.id] === undefined) {
-                userLeave(user.id)
-            }
-        })
+    socket.on('disconnect', async (socket) => {
         console.log(`${socket.id} disconnected`);
-    })
+        deleteById(socket.id)
+        validateConnectedUsers(io);
+    });
 
     // update the users
     setInterval(() => {
-        const users = getUsers();
-        io.emit('get-users', users);
+        validateConnectedUsers(io);
     }, 2000);
+
 }
