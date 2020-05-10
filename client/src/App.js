@@ -17,9 +17,9 @@ function App() {
     const { isLoggedIn, inGame } = state;
 
     useEffect(() => {
-        if (state.localData) {
-            socket.emit('login', state.localData);
-        }
+        // if (state.localData) {
+        //     socket.emit('login', state.localData);
+        // }
 
         socket.on('disconnect', () => {
             if (inGame) {

@@ -1,10 +1,8 @@
-const localData = localStorage.getItem('username');
-
 export const initialState = {
-    username: localData ? localData : '',
+    username: '',
     isLoading: false,
     error: '',
-    isLoggedIn: localData ? true : false,
+    isLoggedIn: false,
     connectedUsers: [],
     inGame: false,
     opponent: {
@@ -13,5 +11,4 @@ export const initialState = {
     },
     playerTurn: false,
     player: "",
-    localData,
 };
